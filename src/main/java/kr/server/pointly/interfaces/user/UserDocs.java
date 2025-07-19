@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.server.pointly.interfaces.common.PageResponse;
-import org.springdoc.api.annotations.ParameterObject;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,39 +24,39 @@ public interface UserDocs {
                     mediaType = "application/json",
                     schema = @Schema(implementation = PageResponse.class),
                     examples = @ExampleObject(value = """
-                        {\s
-                            content : [
-                                {\s
+                        {
+                            "content": [
+                                {
                                     "userId": 1,
                                     "name": "이건엽",
                                     "viewCount": 5,
                                     "createAt": "2024-07-14"
                                 },
-                                {\s
+                                {
                                     "userId": 2,
                                     "name": "홍길동",
                                     "viewCount": 10,
                                     "createAt": "2024-07-13"
                                 },
-                                {\s
+                                {
                                     "userId": 3,
                                     "name": "정지훈",
                                     "viewCount": 20,
                                     "createAt": "2024-07-12"
                                 },
-                                {\s
+                                {
                                     "userId": 4,
                                     "name": "박재혁",
                                     "viewCount": 30,
                                     "createAt": "2024-07-11"
-                                },
+                                }
                             ],
-                            page: 1,
-                            size: 10,
-                            totalCount : 4,
-                            totalPage : 1
+                            "page": 1,
+                            "size": 10,
+                            "totalCount": 4,
+                            "totalPage": 1
                         }
-                   \s""")
+                    """)
             )
     )
     @ApiResponse(
