@@ -40,6 +40,6 @@
 - [시퀀스 다이어그램](docs/sequenceDiagram.md)
 - [ERD](docs/erd.md)
 
-## MockAPI Swagger
+## Swagger
 
-domain - infra - application 개발 .. ... 
+http://localhost:8080/swagger-ui/index.html
