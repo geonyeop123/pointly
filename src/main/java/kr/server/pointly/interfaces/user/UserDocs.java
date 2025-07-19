@@ -108,7 +108,6 @@ public interface UserDocs {
             )
     )
     ResponseEntity<UserResponse.AddView> addView (
-            @PathVariable Long userId,
-            @ParameterObject UserRequest.AddView request
+            @PathVariable Long userId
     );
 }

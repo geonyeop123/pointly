@@ -1,6 +1,7 @@
 package kr.server.pointly.interfaces.user;
 
 import kr.server.pointly.domain.user.FindUserSortType;
+import kr.server.pointly.domain.user.UserCommand;
 
 public record UserRequest(
 
@@ -10,10 +11,8 @@ public record UserRequest(
             int size,
             FindUserSortType sortType
     ){
-
-    }
-
-    public record AddView(){
-
+        public UserCommand.FindAll toCommand(){
+            return new UserCommand.FindAll(page, size, sortType);
+        }
     }
 }
