@@ -1,14 +1,23 @@
 package kr.server.pointly.interfaces.user;
 
+import kr.server.pointly.domain.user.User;
+import kr.server.pointly.domain.user.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -19,12 +28,23 @@ class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @MockitoBean
+    private UserService userService;
+
     @DisplayName("회원 목록 조회 요청 시 페이징 처리 된 회원 목록을 받는다.")
     @Test
     void findAll() throws Exception {
         //given
+
         UserRequest.FindAll request =
                 new UserRequest.FindAll(1, 10, null);
+
+        List<User> content = List.of(User.create("이건엽"), User.create("홍길동")
+                , User.create("정지훈"), User.create("박재혁"), User.create("이상혁"));
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<User> page = new PageImpl<>(content, pageable, 5);
+        when(userService.findAll(request.toCommand())).thenReturn(page);
+
         // when then
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users")
                         .queryParam("page", String.valueOf(request.page()))
@@ -34,7 +54,7 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.content").isArray())
                 .andExpect(jsonPath("$.page").value(request.page()))
                 .andExpect(jsonPath("$.size").value(request.size()))
-                .andExpect(jsonPath("$.totalCount").value(4))
+                .andExpect(jsonPath("$.totalCount").value(5))
                 .andExpect(jsonPath("$.totalPages").value(1))
         ;
     }
@@ -58,4 +78,5 @@ class UserControllerTest {
                     .andExpect(jsonPath("$.modifiedAt").value("2025-07-18T00:00:00"))
         ;
     }
+
 }
