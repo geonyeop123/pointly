@@ -46,27 +46,23 @@ class UserServiceIntegrationTest {
         }
 
         @DisplayName("유저 목록을 등록 최신순으로 조회할 수 있다.")
+        @Sql(scripts = "/sql/user.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
         @Test
         void findAllSortedByCreatedAt() {
             // given
-            jpaUserRepository.save(User.create("첫번째"));
-            jpaUserRepository.save(User.create("두번째"));
-            jpaUserRepository.save(User.create("세번째"));
-            jpaUserRepository.save(User.create("네번째"));
-            jpaUserRepository.save(User.create("다섯번째"));
             UserCommand.FindAll command = new UserCommand.FindAll(1, 5, FindUserSortType.CREATED_AT);
 
             // when
             Page<User> page = userService.findAll(command);
 
             // then
-            assertThat(page.getContent()).extracting("name").containsExactly("첫번째", "두번째", "세번째", "네번째", "다섯번째");
+            assertThat(page.getContent()).extracting("name").containsExactly("user1", "user2", "user3", "user4", "user5");
         }
 
         // 생성순 정렬 조회
         @DisplayName("유저 목록을 조회수 순으로 정렬할 수 있다.")
         @Test
-        @Sql(scripts = "/sql/userView.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+        @Sql(scripts = "/sql/user.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
         void findAllSortedByViewCount() {
             // given
             UserCommand.FindAll command = new UserCommand.FindAll(1, 5, FindUserSortType.VIEW_COUNT);
@@ -90,6 +86,21 @@ class UserServiceIntegrationTest {
             // then
             assertThat(page.getContent()).isEmpty();
             assertThat(page.getTotalElements()).isEqualTo(0L);
+        }
+    }
+
+    @Nested
+    class AddView {
+
+        @DisplayName("정상적인 userId로 조회수 증가 요청 시 조회수가 증가된 User를 반환한다.")
+        @Test
+        void success() {
+            User user = jpaUserRepository.save(User.create("이건엽"));
+            UserCommand.AddView command = new UserCommand.AddView(user.getId());
+            userService.addView(command);
+            assertThat(user.getViewCount()).isEqualTo(1);
+            jpaUserRepository.findById(user.getId())
+                    .ifPresent(u -> assertThat(u.getViewCount()).isEqualTo(1));
         }
     }
 

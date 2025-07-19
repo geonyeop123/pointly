@@ -18,4 +18,15 @@ class UserTest {
         assertThat(user.getViewCount()).isEqualTo(0);
     }
 
+    @DisplayName("유저의 조회수를 증가시킬 수 있다.")
+    @Test
+    void increaseViewCount() {
+        // given
+        User user = User.create("이건엽");
+        // when
+        user.increaseViewCount();
+        // then
+        assertThat(user.getViewCount()).isEqualTo(1);
+    }
+
 }

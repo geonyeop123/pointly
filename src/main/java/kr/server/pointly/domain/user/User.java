@@ -31,4 +31,8 @@ public class User extends BaseEntity {
     public static User create(String name){
         return new User(name, 0L);
     }
+
+    public Long increaseViewCount(){
+        return this.viewCount++;
+    }
 }

@@ -25,4 +25,9 @@ public record UserCommand(
         }
 
     }
+
+    public record AddView(
+            Long userId
+    ) {
+    }
 }

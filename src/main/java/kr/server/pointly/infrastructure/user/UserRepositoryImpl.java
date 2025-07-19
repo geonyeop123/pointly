@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 @RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
@@ -16,5 +18,10 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Page<User> findAll(Pageable pageable) {
         return jpaUserRepository.findAll(pageable);
+    }
+
+    @Override
+    public Optional<User> findByIdForUpdate(Long userId) {
+        return jpaUserRepository.findByIdForUpdate(userId);
     }
 }
