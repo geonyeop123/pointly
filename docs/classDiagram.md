@@ -40,17 +40,18 @@ classDiagram
         -PaymentStatus status
         -LocalDateTime createdAt
         -LocalDateTime modifiedAt
+        +create(userId : Long, amount : Long, type : PaymentType) : Payment
         +cancel() : void
-        +complete() : void
-        +cancelPending() : void
+        +complete(amount : Long, type : PaymentType) : void
+        +fail() : void
     }
 
     class PaymentStatus {
         <<enumeration>>
         PENDING
         COMPLETED
-        CANCEL_PENDING
         CANCELED
+        FAILED
     }
 
     class PaymentType {
@@ -67,12 +68,12 @@ classDiagram
         -String messageCode
         -String message
         -LocalDateTime createdAt
+        +paid(payment : Payment, paymentToken : String, createdAt : LocalDateTime) : PaymentHistory
     }
 
     class PaymentTransactionType {
         <<enumeration>>
         PAID
-        CANCEL
     }
     class PointHistory{
         -Long id
