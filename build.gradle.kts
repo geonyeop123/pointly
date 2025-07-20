@@ -28,7 +28,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
+    implementation("org.springframework.retry:spring-retry")
 
     // TEST
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -39,6 +39,9 @@ dependencies {
 
     //Swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
+
+    //Docker
+    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 
     // DB
     runtimeOnly("com.mysql:mysql-connector-j")
