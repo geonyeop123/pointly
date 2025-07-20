@@ -1,6 +1,7 @@
 package kr.server.pointly.interfaces.user;
 
 import kr.server.pointly.domain.user.User;
+import kr.server.pointly.domain.user.UserCommand;
 import kr.server.pointly.domain.user.UserService;
 import kr.server.pointly.interfaces.common.PageResponse;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,6 +37,9 @@ public class UserController implements UserDocs{
     @PatchMapping("/api/v1/users/{userId}/view")
     public ResponseEntity<UserResponse.AddView> addView(
                     @PathVariable("userId") Long userId) {
-        return ResponseEntity.ok(new UserResponse.AddView(1L, 5L, LocalDateTime.of(2025, 7, 18, 0, 0, 0)));
+        UserCommand.AddView addView = new UserCommand.AddView(userId);
+        User user = userService.addView(addView);
+        UserResponse.AddView response = UserResponse.AddView.from(user);
+        return ResponseEntity.ok(response);
     }
 }

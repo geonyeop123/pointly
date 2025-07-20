@@ -20,6 +20,8 @@ public record UserResponse(
             Long viewCount,
             LocalDateTime modifiedAt
     ){
-
+        public static UserResponse.AddView from(User user){
+            return new UserResponse.AddView(user.getId(), user.getViewCount(), user.getModifiedAt());
+        }
     }
 }

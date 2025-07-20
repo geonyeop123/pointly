@@ -1,6 +1,7 @@
 package kr.server.pointly.interfaces.user;
 
 import kr.server.pointly.domain.user.User;
+import kr.server.pointly.domain.user.UserCommand;
 import kr.server.pointly.domain.user.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
@@ -63,19 +63,18 @@ class UserControllerTest {
     @Test
     void addView() throws Exception {
         // given
-        UserResponse.AddView response = new UserResponse.AddView(1L, 5L, LocalDateTime.of(2025, 7, 18, 0, 0, 0));
+        Long userId = 1L;
+        UserCommand.AddView command = new UserCommand.AddView(userId);
+        User user = User.create("이건엽");
+        user.increaseViewCount();
 
-        UserRequest.FindAll request =
-                new UserRequest.FindAll(1, 10, null);
-
+        when(userService.addView(command)).thenReturn(user);
 
         // when // then
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/v1/users/{userId}/view", 1L))
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.userId").value(response.userId()))
-                    .andExpect(jsonPath("$.viewCount").value(response.viewCount()))
-                    .andExpect(jsonPath("$.modifiedAt").value("2025-07-18T00:00:00"))
+                    .andExpect(jsonPath("$.viewCount").value(user.getViewCount()))
         ;
     }
 
