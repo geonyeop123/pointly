@@ -15,7 +15,7 @@ public class PaymentService {
     private final PaymentHistoryRepository paymentHistoryRepository;
 
     public Payment create(PaymentCommand.Create command){
-        Payment payment = Payment.create(command.user().getId(), command.amount(), command.paymentType());
+        Payment payment = Payment.create(command.user().getId(), command.amount(), command.PGType());
         return paymentRepository.save(payment);
     }
 
@@ -23,7 +23,7 @@ public class PaymentService {
         Payment payment = paymentRepository.findById(command.paymentId())
                 .orElseThrow(() -> new IllegalArgumentException("해당되는 결제가 없습니다."));
 
-        payment.complete(command.amount(), command.paymentType());
+        payment.complete(command.amount(), command.PGType());
 
         PaymentHistory history = PaymentHistory.paid(payment, command.paymentToken(), LocalDateTime.now());
         paymentHistoryRepository.save(history);

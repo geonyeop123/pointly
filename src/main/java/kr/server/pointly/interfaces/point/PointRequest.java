@@ -5,14 +5,14 @@ public record PointRequest(
 ) {
     public record RequestCharge(
             Long amount,
-            String paymentType
+            String pgType
     ){
     }
 
     public record CompleteCharge(
             Long paymentId,
             Long amount,
-            String paymentType,
+            String pgType,
             String paymentToken
     ){
 

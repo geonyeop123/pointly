@@ -51,7 +51,7 @@ sequenceDiagram
     participant Server
     participant Database
 
-    Client->>Server: POST /api/v1/users/points/charge (userId, amount, paymentType)
+    Client->>Server: POST /api/v1/users/points/charge (userId, amount, pgType)
 		Note over Server : Payment, PaymentHistory 생성
     Server->>Database : Payment, PaymentHistory 저장
 		Server->>Client : 200 OK (요청 성공)
@@ -66,7 +66,7 @@ sequenceDiagram
     participant Toss Payments API
     participant Event
 
-    Client->>Server: PATCH /api/v1/points/charge/approve (userId, paymentId, amount, paymentType, paymentToken)
+    Client->>Server: PATCH /api/v1/points/charge/approve (userId, paymentId, amount, pgType, paymentToken)
     Server->>Database : Payment 조회
     Database->>Server : Payment 반환
 	  Server->>Server : Payment 검증

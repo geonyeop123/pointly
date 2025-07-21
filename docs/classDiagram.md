@@ -36,13 +36,13 @@ classDiagram
         -Long id
         -Long userId
         -Long amount
-        -PaymentType type
+        -PGType type
         -PaymentStatus status
         -LocalDateTime createdAt
         -LocalDateTime modifiedAt
-        +create(userId : Long, amount : Long, type : PaymentType) : Payment
+        +create(userId : Long, amount : Long, type : PGType) : Payment
         +cancel() : void
-        +complete(amount : Long, type : PaymentType) : void
+        +complete(amount : Long, type : PGType) : void
         +fail() : void
     }
 

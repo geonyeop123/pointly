@@ -38,7 +38,7 @@ class PaymentServiceIntegrationTest {
         // given
         User user = jpaUserRepository.save(User.create("이건엽"));
         Long amount = 1000L;
-        PaymentCommand.Create command = new PaymentCommand.Create(user, amount, PaymentType.TOSS);
+        PaymentCommand.Create command = new PaymentCommand.Create(user, amount, PGType.TOSS);
 
         // when
         Payment payment = paymentService.create(command);
@@ -58,8 +58,8 @@ class PaymentServiceIntegrationTest {
             User user = jpaUserRepository.save(User.create("이건엽"));
             Long userId = user.getId();
             Long amount = 1000L;
-            Payment payment = jpaPaymentRepository.save(Payment.create(userId, 1000L, PaymentType.TOSS));
-            PaymentCommand.Complete command = new PaymentCommand.Complete(user, payment.getId(), amount, PaymentType.TOSS, "paymentToken");
+            Payment payment = jpaPaymentRepository.save(Payment.create(userId, 1000L, PGType.TOSS));
+            PaymentCommand.Complete command = new PaymentCommand.Complete(user, payment.getId(), amount, PGType.TOSS, "paymentToken");
 
             // when
             Payment completedPayment = paymentService.complete(command);
@@ -81,7 +81,7 @@ class PaymentServiceIntegrationTest {
             Long userId = user.getId();
             Long amount = 1000L;
             Long paymentId = 1L;
-            PaymentCommand.Complete command = new PaymentCommand.Complete(user, paymentId, amount, PaymentType.TOSS, "paymentToken");
+            PaymentCommand.Complete command = new PaymentCommand.Complete(user, paymentId, amount, PGType.TOSS, "paymentToken");
 
             // when // then
             assertThatThrownBy(() -> paymentService.complete(command))
@@ -98,7 +98,7 @@ class PaymentServiceIntegrationTest {
             // given
             User user = jpaUserRepository.save(User.create("이건엽"));
             Long userId = user.getId();
-            Payment payment = jpaPaymentRepository.save(Payment.create(userId, 1000L, PaymentType.TOSS));
+            Payment payment = jpaPaymentRepository.save(Payment.create(userId, 1000L, PGType.TOSS));
             PaymentCommand.Cancel command = new PaymentCommand.Cancel(user, payment.getId());
 
             // when
@@ -131,7 +131,7 @@ class PaymentServiceIntegrationTest {
             // given
             User user = jpaUserRepository.save(User.create("이건엽"));
             Long userId = user.getId();
-            Payment payment = jpaPaymentRepository.save(Payment.create(userId, 1000L, PaymentType.TOSS));
+            Payment payment = jpaPaymentRepository.save(Payment.create(userId, 1000L, PGType.TOSS));
             PaymentCommand.Fail command = new PaymentCommand.Fail(user, payment.getId());
 
             // when

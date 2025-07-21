@@ -38,7 +38,7 @@ class PointControllerTest {
                 .andExpect(jsonPath("$.userId").value(1L))
                 .andExpect(jsonPath("$.paymentId").value(1L))
                 .andExpect(jsonPath("$.amount").value(request.amount()))
-                .andExpect(jsonPath("$.paymentType").value(request.paymentType()))
+                .andExpect(jsonPath("$.paymentType").value(request.pgType()))
                 .andExpect(jsonPath("$.paidRequestAt").value("2025-07-18T00:00:00"));
     }
 
@@ -59,7 +59,7 @@ class PointControllerTest {
                 .andExpect(jsonPath("$.balance").value(10000L))
                 .andExpect(jsonPath("$.paymentId").value(1L))
                 .andExpect(jsonPath("$.paidAmount").value(5000L))
-                .andExpect(jsonPath("$.paymentType").value(request.paymentType()))
+                .andExpect(jsonPath("$.paymentType").value(request.pgType()))
                 .andExpect(jsonPath("$.paidAt").value("2025-07-18T00:00:00"));
     }
 

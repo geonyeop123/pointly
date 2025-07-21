@@ -9,7 +9,7 @@ public record PointResponse(
         Long userId,
         Long paymentId,
         Long amount,
-        String paymentType,
+        String pgType,
         LocalDateTime paidRequestAt
     ) {
 
@@ -20,7 +20,7 @@ public record PointResponse(
             Long balance,
             Long paymentId,
             Long paidAmount,
-            String paymentType,
+            String pgType,
             LocalDateTime paidAt
     ){
 

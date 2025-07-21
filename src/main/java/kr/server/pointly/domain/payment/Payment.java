@@ -25,28 +25,28 @@ public class Payment extends BaseEntity {
     private Long amount;
 
     @Enumerated(EnumType.STRING)
-    private PaymentType type;
+    private PGType type;
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
-    private Payment(Long userId, Long amount, PaymentType type, PaymentStatus status) {
+    private Payment(Long userId, Long amount, PGType type, PaymentStatus status) {
         this.userId = userId;
         this.amount = amount;
         this.type = type;
         this.status = status;
     }
 
-    public static Payment create(Long userId, Long amount, PaymentType type){
+    public static Payment create(Long userId, Long amount, PGType type){
         return new Payment(userId, amount, type, PaymentStatus.PENDING);
     }
 
-    public void complete(Long paidAmount, PaymentType type) {
+    public void complete(Long paidAmount, PGType type) {
         validateComplete(paidAmount, type);
         this.status = PaymentStatus.COMPLETED;
     }
 
-    private void validateComplete(Long paidAmount, PaymentType type) {
+    private void validateComplete(Long paidAmount, PGType type) {
         if( this.status != PaymentStatus.PENDING){
             throw new InvalidPaymentStatusException(this.status, PaymentStatus.COMPLETED, this.id);
         }else if(!Objects.equals(paidAmount, this.amount) || type != this.type){
