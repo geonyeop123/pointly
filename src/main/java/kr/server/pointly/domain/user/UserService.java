@@ -23,6 +23,12 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
+    @Transactional(readOnly = true)
+    public User find(UserCommand.Find command){
+        return userRepository.findById(command.userId())
+                .orElseThrow(() -> new IllegalArgumentException("해당되는 유저가 없습니다."));
+    }
+
     public User addView(UserCommand.AddView command) {
         User user = userRepository.findByIdForUpdate(command.userId())
                 .orElseThrow(() -> new IllegalArgumentException("해당되는 유저가 없습니다."));

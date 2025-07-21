@@ -30,4 +30,9 @@ public record UserCommand(
             Long userId
     ) {
     }
+
+    public record Find(
+            Long userId
+    ) {
+    }
 }

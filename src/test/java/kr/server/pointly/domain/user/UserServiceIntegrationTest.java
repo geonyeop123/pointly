@@ -104,4 +104,23 @@ class UserServiceIntegrationTest {
         }
     }
 
+    @Nested
+    class Find {
+        @DisplayName("정상적인 userId로 User조회 시 해당되는 User를 반환한다.")
+        @Test
+        void success() {
+            // given
+            User user = jpaUserRepository.save(User.create("이건엽"));
+            UserCommand.Find command = new UserCommand.Find(user.getId());
+
+            // when
+            userService.find(command);
+
+            // then
+            assertThat(user).isNotNull();
+            jpaUserRepository.findById(user.getId())
+                    .ifPresent(u -> assertThat(u.getId()).isEqualTo(user.getId()));
+        }
+    }
+
 }
