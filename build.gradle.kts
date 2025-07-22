@@ -1,6 +1,6 @@
 plugins {
     java
-    id("org.springframework.boot") version "3.5.3"
+    id("org.springframework.boot") version "3.4.1"
     id("io.spring.dependency-management") version "1.1.7"
 }
 
@@ -25,7 +25,7 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2025.0.0")
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2024.0.0")
     }
 }
 
@@ -61,4 +61,8 @@ dependencies {
 tasks.withType<Test> {
     useJUnitPlatform()
     systemProperty("user.timezone", "UTC")
+}
+
+tasks.bootJar {
+    archiveFileName.set("pointly.jar")
 }

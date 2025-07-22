@@ -1,12 +1,14 @@
 package kr.server.pointly.support.exception;
 
 import feign.FeignException;
+import io.swagger.v3.oas.annotations.Hidden;
 import kr.server.pointly.interfaces.common.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+@Hidden
 @RestControllerAdvice(basePackages = "kr.server.pointly.interfaces")
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 

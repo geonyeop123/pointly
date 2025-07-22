@@ -5,6 +5,9 @@ spring:
     active: local
   datasource:
     name: PointlyDataSource
+    url: jdbc:mysql://mysql:3306/pointly?characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: application
+    password: application
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
       maximum-pool-size: 3
@@ -16,8 +19,9 @@ spring:
     generate-ddl: false
     show-sql: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
+      hibernate.format_sql: true
       hibernate.timezone.default_storage: NORMALIZE_UTC
       hibernate.jdbc.time_zone: UTC
 
@@ -28,26 +32,17 @@ springdoc:
     path: /swagger-ui.html
     operations-sorter: method
 
----
-spring.config.activate.on-profile: local, test
-
-spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/pointly?characterEncoding=UTF-8&serverTimezone=UTC
-    username: application
-    password: application
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        format_sql: true
-        highlight_sql: true
-        use_sql_comments: true
-
 toss:
   secret-key: test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6
   api:
     url:
       confirm: api.tosspayments.com/v1/payments/confirm
+
+---
+spring.config.activate.on-profile: test
+
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
