@@ -6,8 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-
 @RestController
 @RequiredArgsConstructor
 public class PointController implements PointDocs{
@@ -28,7 +26,9 @@ public class PointController implements PointDocs{
     public ResponseEntity<PointResponse.CompletedCharge> completeCharge(
             @PathVariable("userId") Long userId
             , @RequestBody PointRequest.CompleteCharge request) {
-        return ResponseEntity.ok(new PointResponse.CompletedCharge(1L, 10000L,1L, 5000L, "TOSS", LocalDateTime.of(2025, 7, 18, 0, 0, 0)));
+        PointResult.CompleteCharge result = pointFacade.completeCharge(request.toCriteria(userId));
+
+        return ResponseEntity.ok(PointResponse.CompletedCharge.from(result));
     }
 
     @Override

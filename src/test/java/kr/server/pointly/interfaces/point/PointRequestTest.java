@@ -16,7 +16,7 @@ class PointRequestTest {
         void toCriteria() {
             // given
             Long userId = 1L;
-            PointRequest.RequestCharge request = new PointRequest.RequestCharge(1000L, "TOSS");
+            PointRequest.RequestCharge request = new PointRequest.RequestCharge(1000L, "orderId", "TOSS");
 
             // when
             PointCriteria.RequestCharge criteria = request.toCriteria(userId);
@@ -43,6 +43,27 @@ class PointRequestTest {
             // then
             assertThat(criteria.userId()).isEqualTo(userId);
             assertThat(criteria.paymentId()).isEqualTo(request.paymentId());
+        }
+    }
+
+    @Nested
+    class CompleteCharge {
+        @DisplayName("userId를 받아 Criteria를 생성할 수 있다.")
+        @Test
+        void toCriteria() {
+            // given
+            Long userId = 1L;
+            PointRequest.CompleteCharge request = new PointRequest.CompleteCharge(1L, 1000L, "orderId", "TOSS", "token");
+
+            // when
+            PointCriteria.CompleteCharge criteria = request.toCriteria(userId);
+
+            // then
+            assertThat(criteria.userId()).isEqualTo(userId);
+            assertThat(criteria.paymentId()).isEqualTo(request.paymentId());
+            assertThat(criteria.amount()).isEqualTo(request.amount());
+            assertThat(criteria.pgType()).isEqualTo(request.pgType());
+            assertThat(criteria.paymentToken()).isEqualTo(request.paymentToken());
         }
     }
 

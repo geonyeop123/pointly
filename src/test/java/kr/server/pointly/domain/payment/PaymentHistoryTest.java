@@ -18,10 +18,10 @@ class PaymentHistoryTest {
         void success() {
             // given
             Payment payment = Payment.create(1L, 1000L, PGType.TOSS);
-            payment.complete(1000L, PGType.TOSS);
+            payment.complete(1000L, PGType.TOSS, payment.getOrderId());
 
             // when
-            PaymentHistory history = PaymentHistory.paid(payment, "token", LocalDateTime.now());
+            PaymentHistory history = PaymentHistory.paid(payment, LocalDateTime.now());
 
             // then
             assertThat(history.getType()).isEqualTo(TransactionType.PAID);
@@ -34,7 +34,7 @@ class PaymentHistoryTest {
             Payment payment = Payment.create(1L, 1000L, PGType.TOSS);
 
             // when // then
-            assertThatThrownBy(() -> PaymentHistory.paid(payment, "token", LocalDateTime.now()))
+            assertThatThrownBy(() -> PaymentHistory.paid(payment, LocalDateTime.now()))
                     .isInstanceOf(IllegalStateException.class);
         }
 

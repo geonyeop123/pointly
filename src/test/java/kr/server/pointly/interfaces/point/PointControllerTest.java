@@ -36,8 +36,8 @@ class PointControllerTest {
     void requestCharge() throws Exception {
         // given
         Long userId = 1L;
-        PointRequest.RequestCharge request = new PointRequest.RequestCharge( 1000L, "TOSS");
-        PointResult.RequestCharge result = new PointResult.RequestCharge(1L, 1L, request.amount(), request.pgType(), LocalDateTime.of(2025, 7, 22 ,0 ,0 ,0));
+        PointRequest.RequestCharge request = new PointRequest.RequestCharge( 1000L, "orderId", "TOSS");
+        PointResult.RequestCharge result = new PointResult.RequestCharge(1L, 1L, request.orderId(), request.amount(), request.pgType(), LocalDateTime.of(2025, 7, 22 ,0 ,0 ,0));
         when(pointFacade.requestCharge(request.toCriteria(userId))).thenReturn(result);
 
         // when then
@@ -48,6 +48,7 @@ class PointControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userId").value(1L))
                 .andExpect(jsonPath("$.paymentId").value(1L))
+                .andExpect(jsonPath("$.orderId").isNotEmpty())
                 .andExpect(jsonPath("$.amount").value(request.amount()))
                 .andExpect(jsonPath("$.pgType").value(request.pgType()))
                 .andExpect(jsonPath("$.paidRequestAt").value("2025-07-22T00:00:00"));
@@ -58,7 +59,9 @@ class PointControllerTest {
     void completeCharge() throws Exception{
         // given
         Long userId = 1L;
-        PointRequest.CompleteCharge request = new PointRequest.CompleteCharge( 1L, 1000L, "TOSS", "keykeykey");
+        PointRequest.CompleteCharge request = new PointRequest.CompleteCharge( 1L, 5000L, "orderId", "TOSS", "keykeykey");
+        PointResult.CompleteCharge result = new PointResult.CompleteCharge(userId, request.paymentId(), 10000L, 5000L, request.pgType(), LocalDateTime.of(2025, 7, 22, 0, 0, 0));
+        when(pointFacade.completeCharge(request.toCriteria(userId))).thenReturn(result);
 
         // when then
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/v1/users/{userId}/points/charge/approve", userId)
@@ -67,11 +70,11 @@ class PointControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userId").value(1L))
-                .andExpect(jsonPath("$.balance").value(10000L))
                 .andExpect(jsonPath("$.paymentId").value(1L))
+                .andExpect(jsonPath("$.balance").value(10000L))
                 .andExpect(jsonPath("$.paidAmount").value(5000L))
                 .andExpect(jsonPath("$.pgType").value(request.pgType()))
-                .andExpect(jsonPath("$.paidAt").value("2025-07-18T00:00:00"));
+                .andExpect(jsonPath("$.paidAt").value("2025-07-22T00:00:00"));
     }
 
     @DisplayName("포인트 충전 취소 요청 시 취소된 결제 정보를 받는다.")

@@ -16,7 +16,7 @@ class PointResponseTest {
         @Test
         void from() {
             // given
-            PointResult.RequestCharge result = new PointResult.RequestCharge(1L, 1L, 1000L, "TOSS", LocalDateTime.of(2025,7,22,0,0,0));
+            PointResult.RequestCharge result = new PointResult.RequestCharge(1L, 1L, "orderId", 1000L, "TOSS", LocalDateTime.of(2025,7,22,0,0,0));
 
             // when
             PointResponse.RequestCharge response = PointResponse.RequestCharge.from(result);
