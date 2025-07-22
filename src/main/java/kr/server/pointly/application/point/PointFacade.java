@@ -21,9 +21,15 @@ public class PointFacade {
     private final UserService userService;
     private final PaymentService paymentService;
 
-    public PointResult.ChargeRequest chargeRequest(PointCriteria.ChargeRequest criteria){
+    public PointResult.RequestCharge requestCharge(PointCriteria.RequestCharge criteria){
         User user = userService.find(new UserCommand.Find(criteria.userId()));
         Payment payment = paymentService.create(new PaymentCommand.Create(user, criteria.amount(), PGType.valueOf(criteria.paymentType())));
-        return PointResult.ChargeRequest.from(user, payment);
+        return PointResult.RequestCharge.from(user, payment);
+    }
+
+    public PointResult.CancelCharge cancelCharge(PointCriteria.CancelCharge criteria) {
+        User user = userService.find(new UserCommand.Find(criteria.userId()));
+        Payment payment = paymentService.cancel(new PaymentCommand.Cancel(user, criteria.paymentId()));
+        return PointResult.CancelCharge.from(user, payment);
     }
 }

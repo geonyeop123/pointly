@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PointResultTest {
 
     @Nested
-    class ChargeRequest {
+    class RequestCharge {
         @DisplayName("user와 payment로 ChargeRequest를 생성할 수 있다.")
         @Test
         void createByUserAndPayment() {
@@ -21,7 +21,7 @@ class PointResultTest {
             Payment payment = Payment.create(1L, 1000L, PGType.TOSS);
 
             // when
-            PointResult.ChargeRequest result = PointResult.ChargeRequest.from(user, payment);
+            PointResult.RequestCharge result = PointResult.RequestCharge.from(user, payment);
 
             // then
             assertThat(result.paymentId()).isEqualTo(payment.getId());
@@ -29,6 +29,25 @@ class PointResultTest {
             assertThat(result.amount()).isEqualTo(payment.getAmount());
             assertThat(result.pgType()).isEqualTo(payment.getType().name());
             assertThat(result.paidRequestAt()).isEqualTo(payment.getCreatedAt());
+        }
+    }
+
+    @Nested
+    class CancelCharge {
+        @DisplayName("user와 payment로 ChargeRequest를 생성할 수 있다.")
+        @Test
+        void createByUserAndPayment() {
+            // given
+            User user = User.create("이건엽");
+            Payment payment = Payment.create(1L, 1000L, PGType.TOSS);
+
+            // when
+            PointResult.CancelCharge result = PointResult.CancelCharge.from(user, payment);
+
+            // then
+            assertThat(result.paymentId()).isEqualTo(payment.getId());
+            assertThat(result.userId()).isEqualTo(user.getId());
+            assertThat(result.canceledAt()).isEqualTo(payment.getModifiedAt());
         }
     }
 

@@ -8,16 +8,26 @@ import java.time.LocalDateTime;
 public record PointResult(
 
 ) {
-    public record ChargeRequest(
+    public record RequestCharge(
             Long userId,
             Long paymentId,
             Long amount,
             String pgType,
             LocalDateTime paidRequestAt
     ) {
-        public static PointResult.ChargeRequest from(User user, Payment payment){
-            return new PointResult.ChargeRequest(user.getId(), payment.getId(),
+        public static RequestCharge from(User user, Payment payment){
+            return new RequestCharge(user.getId(), payment.getId(),
                     payment.getAmount(), payment.getType().name(), payment.getCreatedAt());
+        }
+    }
+
+    public record CancelCharge(
+        Long userId,
+        Long paymentId,
+        LocalDateTime canceledAt
+    ){
+        public static CancelCharge from(User user, Payment payment) {
+            return new CancelCharge(user.getId(), payment.getId(), payment.getModifiedAt());
         }
     }
 }

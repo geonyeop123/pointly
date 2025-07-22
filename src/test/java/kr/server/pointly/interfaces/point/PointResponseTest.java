@@ -11,15 +11,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class PointResponseTest {
     @Nested
-    class ChargeResponse {
+    class RequestCharge {
         @DisplayName("PointResult를 받아 ChargeResponse를 생성할 수 있다.")
         @Test
         void from() {
             // given
-            PointResult.ChargeRequest result = new PointResult.ChargeRequest(1L, 1L, 1000L, "TOSS", LocalDateTime.of(2025,7,22,0,0,0));
+            PointResult.RequestCharge result = new PointResult.RequestCharge(1L, 1L, 1000L, "TOSS", LocalDateTime.of(2025,7,22,0,0,0));
 
             // when
-            PointResponse.ChargeResponse response = PointResponse.ChargeResponse.from(result);
+            PointResponse.RequestCharge response = PointResponse.RequestCharge.from(result);
 
             // then
             assertThat(response.userId()).isEqualTo(result.userId());

@@ -37,8 +37,8 @@ class PointControllerTest {
         // given
         Long userId = 1L;
         PointRequest.RequestCharge request = new PointRequest.RequestCharge( 1000L, "TOSS");
-        PointResult.ChargeRequest result = new PointResult.ChargeRequest(1L, 1L, request.amount(), request.pgType(), LocalDateTime.of(2025, 7, 22 ,0 ,0 ,0));
-        when(pointFacade.chargeRequest(request.toCriteria(userId))).thenReturn(result);
+        PointResult.RequestCharge result = new PointResult.RequestCharge(1L, 1L, request.amount(), request.pgType(), LocalDateTime.of(2025, 7, 22 ,0 ,0 ,0));
+        when(pointFacade.requestCharge(request.toCriteria(userId))).thenReturn(result);
 
         // when then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/users/{userId}/points/charge", userId)
@@ -80,7 +80,10 @@ class PointControllerTest {
         // given
 
         Long userId = 1L;
-        PointRequest.CancelCharge request = new PointRequest.CancelCharge(1L);
+        Long paymentId = 1L;
+        PointRequest.CancelCharge request = new PointRequest.CancelCharge(paymentId);
+        PointResult.CancelCharge result = new PointResult.CancelCharge(userId, paymentId, LocalDateTime.of(2025, 7, 22 ,0 ,0 ,0));
+        when(pointFacade.cancelCharge(request.toCriteria(userId))).thenReturn(result);
 
         // when then
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/v1/users/{userId}/points/charge/cancel", userId)
@@ -90,6 +93,6 @@ class PointControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userId").value(1L))
                 .andExpect(jsonPath("$.paymentId").value(1L))
-                .andExpect(jsonPath("$.canceledAt").value("2025-07-18T00:00:00"));
+                .andExpect(jsonPath("$.canceledAt").value("2025-07-22T00:00:00"));
     }
 }

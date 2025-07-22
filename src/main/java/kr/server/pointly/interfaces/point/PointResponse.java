@@ -7,19 +7,19 @@ import java.time.LocalDateTime;
 public record PointResponse(
 
 ) {
-    public record ChargeResponse(
+    public record RequestCharge(
         Long userId,
         Long paymentId,
         Long amount,
         String pgType,
         LocalDateTime paidRequestAt
     ) {
-        public static PointResponse.ChargeResponse from(PointResult.ChargeRequest result){
-            return new PointResponse.ChargeResponse(result.userId(), result.paymentId(), result.amount(), result.pgType(), result.paidRequestAt());
+        public static RequestCharge from(PointResult.RequestCharge result){
+            return new RequestCharge(result.userId(), result.paymentId(), result.amount(), result.pgType(), result.paidRequestAt());
         }
     }
 
-    public record ChargeCompletedResponse(
+    public record CompletedCharge(
             Long userId,
             Long balance,
             Long paymentId,
@@ -30,11 +30,13 @@ public record PointResponse(
 
     }
 
-    public record ChargeCanceledResponse (
+    public record CanceledCharge(
             Long userId,
             Long paymentId,
             LocalDateTime canceledAt
     ) {
-
+        public static CanceledCharge from(PointResult.CancelCharge result){
+            return new CanceledCharge(result.userId(), result.paymentId(), result.canceledAt());
+        }
     }
 }
