@@ -30,7 +30,7 @@ public class PointService {
 
         point.charge(command.amount());
 
-        pointHistoryRepository.save(PointHistory.create(point.getId(), TransactionType.CHARGED, command.amount(), LocalDateTime.now()));
+        pointHistoryRepository.save(PointHistory.charged(point.getId(), command.amount(), LocalDateTime.now()));
 
         return point;
     }
