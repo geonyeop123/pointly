@@ -1,20 +1,26 @@
 package kr.server.pointly.interfaces.point;
 
+import kr.server.pointly.application.point.PointFacade;
+import kr.server.pointly.application.point.PointResult;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
 @RestController
+@RequiredArgsConstructor
 public class PointController implements PointDocs{
 
+    private final PointFacade pointFacade;
 
     @Override
     @PostMapping("/api/v1/users/{userId}/points/charge")
     public ResponseEntity<PointResponse.ChargeResponse> requestCharge(
             @PathVariable("userId") Long userId
             , @RequestBody PointRequest.RequestCharge request) {
-        return ResponseEntity.ok(new PointResponse.ChargeResponse(userId, 1L, 1000L, "TOSS", LocalDateTime.of(2025, 7, 18, 0, 0, 0)));
+        PointResult.ChargeRequest result = pointFacade.chargeRequest(request.toCriteria(userId));
+        return ResponseEntity.ok(PointResponse.ChargeResponse.from(result));
     }
 
     @Override
