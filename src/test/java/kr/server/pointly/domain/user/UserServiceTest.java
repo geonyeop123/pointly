@@ -51,6 +51,38 @@ class UserServiceTest {
             assertThat(users.getContent().size()).isEqualTo(2);
             verify(userRepository, times(1)).findAll(any(Pageable.class));
         }
+    }
+
+    @Nested
+    class Find{
+        @DisplayName("id를 받으면 id에 해당하는 User를 조회할 수 있다.")
+        @Test
+        void success() {
+            // given
+            UserCommand.Find command = new UserCommand.Find(1L);
+            when(userRepository.findById(command.userId())).thenReturn(Optional.of(User.create("이건엽")));
+
+            // when
+            User user = userService.find(command);
+
+            // then
+            assertThat(user).isNotNull();
+            verify(userRepository, times(1)).findById(command.userId());
+        }
+
+        @DisplayName("id를 받아 id에 해당하는 User가 없는 경우 IllegalArgumentException 이 발생한다.")
+        @Test
+        void fail() {
+            // given
+            UserCommand.Find command = new UserCommand.Find(1L);
+
+            // when
+             assertThatThrownBy(() -> userService.find(command))
+                     .isInstanceOf(IllegalArgumentException.class);
+
+            // then
+            verify(userRepository, times(1)).findById(command.userId());
+        }
 
     }
 
@@ -79,13 +111,10 @@ class UserServiceTest {
             Long userId = 1L;
             UserCommand.AddView command = new UserCommand.AddView(userId);
 
-            // when
-
+            // when // then
             assertThatThrownBy(() ->userService.addView(command))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("해당되는 유저가 없습니다.");
-
-            // then
         }
     }
 

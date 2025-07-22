@@ -20,7 +20,7 @@ public interface PointDocs {
             description = "포인트 충전 요청 성공",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = PointResponse.ChargeResponse.class),
+                    schema = @Schema(implementation = PointResponse.RequestCharge.class),
                     examples = @ExampleObject(value = """
                         {\s
                             "userId": 1,
@@ -60,7 +60,7 @@ public interface PointDocs {
                 """)
             )
     )
-    ResponseEntity<PointResponse.ChargeResponse> requestCharge (
+    ResponseEntity<PointResponse.RequestCharge> requestCharge (
             @PathVariable Long userId,
             @RequestBody PointRequest.RequestCharge request
     );
@@ -71,7 +71,7 @@ public interface PointDocs {
             description = "포인트 충전 성공",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = PointResponse.ChargeCompletedResponse.class),
+                    schema = @Schema(implementation = PointResponse.CompletedCharge.class),
                     examples = @ExampleObject(value = """
                         {\s
                             "userId": 1,
@@ -84,7 +84,7 @@ public interface PointDocs {
                    \s""")
             )
     )
-    ResponseEntity<PointResponse.ChargeCompletedResponse> completeCharge (
+    ResponseEntity<PointResponse.CompletedCharge> completeCharge (
             @PathVariable Long userId,
             @RequestBody PointRequest.CompleteCharge request
     );
@@ -95,7 +95,7 @@ public interface PointDocs {
             description = "포인트 충전 결제 취소 처리 성공",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = PointResponse.ChargeCanceledResponse.class),
+                    schema = @Schema(implementation = PointResponse.CanceledCharge.class),
                     examples = @ExampleObject(value = """
                         {\s
                             "userId": 1,
@@ -105,7 +105,7 @@ public interface PointDocs {
                    \s""")
             )
     )
-    ResponseEntity<PointResponse.ChargeCanceledResponse> cancelCharge (
+    ResponseEntity<PointResponse.CanceledCharge> cancelCharge (
             @PathVariable Long userId,
             @RequestBody PointRequest.CancelCharge request
     );

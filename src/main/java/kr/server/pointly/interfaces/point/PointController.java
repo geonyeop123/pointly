@@ -1,35 +1,42 @@
 package kr.server.pointly.interfaces.point;
 
+import kr.server.pointly.application.point.PointFacade;
+import kr.server.pointly.application.point.PointResult;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-
 @RestController
+@RequiredArgsConstructor
 public class PointController implements PointDocs{
 
+    private final PointFacade pointFacade;
 
     @Override
     @PostMapping("/api/v1/users/{userId}/points/charge")
-    public ResponseEntity<PointResponse.ChargeResponse> requestCharge(
+    public ResponseEntity<PointResponse.RequestCharge> requestCharge(
             @PathVariable("userId") Long userId
             , @RequestBody PointRequest.RequestCharge request) {
-        return ResponseEntity.ok(new PointResponse.ChargeResponse(userId, 1L, 1000L, "TOSS", LocalDateTime.of(2025, 7, 18, 0, 0, 0)));
+        PointResult.RequestCharge result = pointFacade.requestCharge(request.toCriteria(userId));
+        return ResponseEntity.ok(PointResponse.RequestCharge.from(result));
     }
 
     @Override
     @PatchMapping("/api/v1/users/{userId}/points/charge/approve")
-    public ResponseEntity<PointResponse.ChargeCompletedResponse> completeCharge(
+    public ResponseEntity<PointResponse.CompletedCharge> completeCharge(
             @PathVariable("userId") Long userId
             , @RequestBody PointRequest.CompleteCharge request) {
-        return ResponseEntity.ok(new PointResponse.ChargeCompletedResponse(1L, 10000L,1L, 5000L, "TOSS", LocalDateTime.of(2025, 7, 18, 0, 0, 0)));
+        PointResult.CompleteCharge result = pointFacade.completeCharge(request.toCriteria(userId));
+
+        return ResponseEntity.ok(PointResponse.CompletedCharge.from(result));
     }
 
     @Override
     @PatchMapping("/api/v1/users/{userId}/points/charge/cancel")
-    public ResponseEntity<PointResponse.ChargeCanceledResponse> cancelCharge(
+    public ResponseEntity<PointResponse.CanceledCharge> cancelCharge(
             @PathVariable("userId") Long userId
             , @RequestBody PointRequest.CancelCharge request) {
-        return ResponseEntity.ok(new PointResponse.ChargeCanceledResponse(1L, 1L, LocalDateTime.of(2025, 7, 18, 0, 0, 0)));
+        PointResult.CancelCharge result = pointFacade.cancelCharge(request.toCriteria(userId));
+        return ResponseEntity.ok(PointResponse.CanceledCharge.from(result));
     }
 }

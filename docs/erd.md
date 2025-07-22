@@ -42,6 +42,8 @@ erDiagram
         BIGINT id PK
         BIGINT user_id FK
         BIGINT amount
+        VARCHAR(100) orderId
+        VARCHAR(50) paymentToken
         VARCHAR(20) type
         VARCHAR(20) status
         DATETIME created_at
@@ -53,9 +55,6 @@ erDiagram
         BIGINT payment_id FK
         VARCHAR(20) transaction_type
         BIGINT amount
-        VARCHAR(50) payment_token
-        VARCHAR(20) message_code
-        TEXT message
         DATETIME created_at
     }
 

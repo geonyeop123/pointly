@@ -29,8 +29,8 @@ class PaymentServiceTest {
     @Test
     void create() {
         // given
-        PaymentCommand.Create command = new PaymentCommand.Create(User.create("이건엽"), 1000L, PaymentType.TOSS);
-        Payment payment = Payment.create(command.user().getId(), command.amount(), command.paymentType());
+        PaymentCommand.Create command = new PaymentCommand.Create(User.create("이건엽"), 1000L, "orderId", PGType.TOSS);
+        Payment payment = Payment.create(command.user().getId(), command.amount(), command.PGType());
         when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
 
         // when
@@ -47,9 +47,10 @@ class PaymentServiceTest {
         @Test
         void success() {
             // given
+            Payment payment = Payment.create(1L, 1000L, PGType.TOSS);
             PaymentCommand.Complete command =
-                    new PaymentCommand.Complete(User.create("이건엽"), 1L, 1000L, PaymentType.TOSS, "paymentToken");
-            when(paymentRepository.findById(command.paymentId())).thenReturn(java.util.Optional.of(Payment.create(command.paymentId(), command.amount(), command.paymentType())));
+                    new PaymentCommand.Complete(User.create("이건엽"), payment.getId(), payment.getAmount(), payment.getOrderId(), payment.getType(), "paymentToken");
+            when(paymentRepository.findById(command.paymentId())).thenReturn(java.util.Optional.of(payment));
             doNothing().when(paymentHistoryRepository).save(any(PaymentHistory.class));
             // when
             Payment completedPayment = paymentService.complete(command);
@@ -65,7 +66,7 @@ class PaymentServiceTest {
         void failNotFoundPayment() {
             // given
             PaymentCommand.Complete command =
-                    new PaymentCommand.Complete(User.create("이건엽"), 1L, 1000L, PaymentType.TOSS, "paymentToken");
+                    new PaymentCommand.Complete(User.create("이건엽"), 1L, 1000L, "orderId", PGType.TOSS, "paymentToken");
 
             // when // then
             assertThatThrownBy(() -> paymentService.complete(command))
@@ -84,7 +85,7 @@ class PaymentServiceTest {
             // given
             PaymentCommand.Cancel command =
                     new PaymentCommand.Cancel(User.create("이건엽"), 1L);
-            when(paymentRepository.findById(command.paymentId())).thenReturn(java.util.Optional.of(Payment.create(command.paymentId(), 1000L, PaymentType.TOSS)));
+            when(paymentRepository.findById(command.paymentId())).thenReturn(java.util.Optional.of(Payment.create(command.paymentId(), 1000L, PGType.TOSS)));
             // when
             Payment canceledPayment = paymentService.cancel(command);
 
@@ -116,7 +117,9 @@ class PaymentServiceTest {
             // given
             PaymentCommand.Fail command =
                     new PaymentCommand.Fail(User.create("이건엽"), 1L);
-            when(paymentRepository.findById(command.paymentId())).thenReturn(java.util.Optional.of(Payment.create(command.paymentId(), 1000L, PaymentType.TOSS)));
+            Payment payment = Payment.create(command.paymentId(), 1000L, PGType.TOSS);
+            payment.complete(1000L, PGType.TOSS, payment.getOrderId());
+            when(paymentRepository.findById(command.paymentId())).thenReturn(java.util.Optional.of(payment));
             // when
             Payment canceledPayment = paymentService.fail(command);
 

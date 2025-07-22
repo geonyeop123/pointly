@@ -23,12 +23,19 @@ repositories {
     mavenCentral()
 }
 
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2025.0.0")
+    }
+}
+
 dependencies {
     //Spring
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.retry:spring-retry")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
     // TEST
     testImplementation("org.springframework.boot:spring-boot-starter-test")

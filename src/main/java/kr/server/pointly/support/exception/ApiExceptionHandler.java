@@ -1,5 +1,6 @@
 package kr.server.pointly.support.exception;
 
+import feign.FeignException;
 import kr.server.pointly.interfaces.common.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -8,6 +9,24 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @RestControllerAdvice(basePackages = "kr.server.pointly.interfaces")
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(InvalidPaymentStatusException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidPaymentStatusException(InvalidPaymentStatusException e) {
+        ErrorResponse response = new ErrorResponse(String.valueOf(400), e.getMessage());
+        return ResponseEntity.status(400).body(response);
+    }
+
+    @ExceptionHandler(PaymentMismatchException.class)
+    public ResponseEntity<ErrorResponse> handlePaymentMismatchException(PaymentMismatchException e) {
+        ErrorResponse response = new ErrorResponse(String.valueOf(400), e.getMessage());
+        return ResponseEntity.status(400).body(response);
+    }
+
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<ErrorResponse> handleFeignException(FeignException e) {
+        ErrorResponse response = new ErrorResponse(String.valueOf(e.status()), e.getMessage());
+        return ResponseEntity.status(e.status()).body(response);
+    }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {

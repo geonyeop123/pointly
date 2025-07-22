@@ -11,14 +11,15 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PaymentTest {
 
-    @DisplayName("Payment를 생성하면 최초 상태는 PENDING이다.")
+    @DisplayName("Payment를 생성하면 최초 상태는 PENDING이며, orderId가 생성된다.")
     @Test
     void create() {
         // given // when
-        Payment payment = Payment.create(1L, 1000L, PaymentType.TOSS);
+        Payment payment = Payment.create(1L, 1000L, PGType.TOSS);
 
         // then
         assertThat(payment.getStatus()).isEqualTo(PaymentStatus.PENDING);
+        assertThat(payment.getOrderId()).isNotNull();
     }
 
     @Nested
@@ -28,10 +29,10 @@ class PaymentTest {
         @Test
         void success() {
             // given
-            Payment payment = Payment.create(1L, 1000L, PaymentType.TOSS);
+            Payment payment = Payment.create(1L, 1000L, PGType.TOSS);
 
             // when
-            payment.complete(1000L, PaymentType.TOSS);
+            payment.complete(1000L, PGType.TOSS, payment.getOrderId());
 
             // then
             assertThat(payment.getStatus()).isEqualTo(PaymentStatus.COMPLETED);
@@ -41,10 +42,10 @@ class PaymentTest {
         @Test
         void failFromCanceled() {
             // given
-            Payment payment = Payment.create(1L, 1000L, PaymentType.TOSS);
+            Payment payment = Payment.create(1L, 1000L, PGType.TOSS);
             payment.cancel();
             // when // then
-            assertThatThrownBy(() -> payment.complete(1000L, PaymentType.TOSS))
+            assertThatThrownBy(() -> payment.complete(1000L, PGType.TOSS, payment.getOrderId()))
                     .isInstanceOf(InvalidPaymentStatusException.class);
         }
 
@@ -52,11 +53,11 @@ class PaymentTest {
         @Test
         void failFromCompleted() {
             // given
-            Payment payment = Payment.create(1L, 1000L, PaymentType.TOSS);
-            payment.complete(1000L, PaymentType.TOSS);
+            Payment payment = Payment.create(1L, 1000L, PGType.TOSS);
+            payment.complete(1000L, PGType.TOSS, payment.getOrderId());
 
             // when // then
-            assertThatThrownBy(() -> payment.complete(1000L, PaymentType.TOSS))
+            assertThatThrownBy(() -> payment.complete(1000L, PGType.TOSS, payment.getOrderId()))
                     .isInstanceOf(InvalidPaymentStatusException.class);
         }
 
@@ -64,9 +65,9 @@ class PaymentTest {
         @Test
         void failMismatchAmount() {
             // given
-            Payment payment = Payment.create(1L, 1000L, PaymentType.TOSS);
+            Payment payment = Payment.create(1L, 1000L, PGType.TOSS);
             // when // then
-            assertThatThrownBy(() -> payment.complete(2000L, PaymentType.TOSS))
+            assertThatThrownBy(() -> payment.complete(2000L, PGType.TOSS, payment.getOrderId()))
                     .isInstanceOf(PaymentMismatchException.class);
         }
 
@@ -74,9 +75,19 @@ class PaymentTest {
         @Test
         void failMismatchType() {
             // given
-            Payment payment = Payment.create(1L, 1000L, PaymentType.TOSS);
+            Payment payment = Payment.create(1L, 1000L, PGType.TOSS);
             // when // then
-            assertThatThrownBy(() -> payment.complete(1000L, null))
+            assertThatThrownBy(() -> payment.complete(1000L, null, payment.getOrderId()))
+                    .isInstanceOf(PaymentMismatchException.class);
+        }
+
+        @DisplayName("기존의 orderId와 받은 orderId가 맞지 않는 경우 PaymentMismatchException이  발생한다.")
+        @Test
+        void failMismatchOrderId() {
+            // given
+            Payment payment = Payment.create(1L, 1000L, PGType.TOSS);
+            // when // then
+            assertThatThrownBy(() -> payment.complete(1000L, null, payment.getOrderId()))
                     .isInstanceOf(PaymentMismatchException.class);
         }
     }
@@ -87,7 +98,7 @@ class PaymentTest {
         @DisplayName("PENDING 상태에서 cancel()을 호출하면 CANCELED 로 변경된다.")
         @Test
         void success() {
-            Payment payment = Payment.create(1L, 1000L, PaymentType.TOSS);
+            Payment payment = Payment.create(1L, 1000L, PGType.TOSS);
 
             payment.cancel();
 
@@ -97,8 +108,8 @@ class PaymentTest {
         @DisplayName("COMPLETED 상태에서 cancel()을 호출하면 InvalidPaymentStatusException이 발생한다.")
         @Test
         void failFromCompleted() {
-            Payment payment = Payment.create(1L, 1000L, PaymentType.TOSS);
-            payment.complete(1000L, PaymentType.TOSS);
+            Payment payment = Payment.create(1L, 1000L, PGType.TOSS);
+            payment.complete(1000L, PGType.TOSS, payment.getOrderId());
 
             assertThatThrownBy(payment::cancel)
                     .isInstanceOf(InvalidPaymentStatusException.class);
@@ -107,7 +118,7 @@ class PaymentTest {
         @DisplayName("CANCELED 상태에서 cancel()을 호출하면 InvalidPaymentStatusException이 발생한다.")
         @Test
         void failFromCanceled() {
-            Payment payment = Payment.create(1L, 1000L, PaymentType.TOSS);
+            Payment payment = Payment.create(1L, 1000L, PGType.TOSS);
             payment.cancel();
 
             assertThatThrownBy(payment::cancel)
@@ -118,21 +129,21 @@ class PaymentTest {
     @Nested
     class FAIL {
 
-        @DisplayName("PENDING 상태에서 fail()을 호출하면 FAILED 로 변경된다.")
+        @DisplayName("COMPLETED 상태에서 fail()을 호출하면 FAILED 로 변경된다.")
         @Test
         void success() {
-            Payment payment = Payment.create(1L, 1000L, PaymentType.TOSS);
+            Payment payment = Payment.create(1L, 1000L, PGType.TOSS);
+            payment.complete(1000L, PGType.TOSS, payment.getOrderId());
 
             payment.fail();
 
             assertThat(payment.getStatus()).isEqualTo(PaymentStatus.FAILED);
         }
 
-        @DisplayName("COMPLETED 상태에서 fail()을 호출하면 InvalidPaymentStatusException이 발생한다.")
+        @DisplayName("PENDING 상태에서 fail()을 호출하면 InvalidPaymentStatusException이 발생한다.")
         @Test
         void failFromCompleted() {
-            Payment payment = Payment.create(1L, 1000L, PaymentType.TOSS);
-            payment.complete(1000L, PaymentType.TOSS);
+            Payment payment = Payment.create(1L, 1000L, PGType.TOSS);
 
             assertThatThrownBy(payment::fail)
                     .isInstanceOf(InvalidPaymentStatusException.class);
@@ -141,7 +152,7 @@ class PaymentTest {
         @DisplayName("CANCELED 상태에서 fail()을 호출하면 InvalidPaymentStatusException이 발생한다.")
         @Test
         void failFromCanceled() {
-            Payment payment = Payment.create(1L, 1000L, PaymentType.TOSS);
+            Payment payment = Payment.create(1L, 1000L, PGType.TOSS);
             payment.cancel();
 
             assertThatThrownBy(payment::fail)

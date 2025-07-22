@@ -8,7 +8,8 @@ public record PaymentCommand(
     public record Create(
             User user,
             Long amount,
-            PaymentType paymentType
+            String orderId,
+            PGType PGType
     ){
 
     }
@@ -16,7 +17,8 @@ public record PaymentCommand(
             User user,
             Long paymentId,
             Long amount,
-            PaymentType paymentType,
+            String orderId,
+            PGType PGType,
             String paymentToken
     ) {
 
