@@ -43,3 +43,7 @@
 ## Swagger
 
 http://localhost:8080/swagger-ui/index.html
+
+## 외부 결제 모듈 (토스페이먼츠)
+
+openfeign을 활용하여 @FeignClient로 구현하였습니다.
