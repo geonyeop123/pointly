@@ -54,7 +54,7 @@ sequenceDiagram
     Client->>Server: POST /api/v1/users/points/charge (userId, amount, pgType)
 		Note over Server : Payment, PaymentHistory 생성
     Server->>Database : Payment, PaymentHistory 저장
-		Server->>Client : 200 OK (요청 성공)
+		Server->>Client : 200 OK (요청 성공 paymentId, orderId)
 ```
 
 ## 포인트 충전 결제 완료
@@ -74,20 +74,16 @@ sequenceDiagram
 		Note over Server : Payment 갱신, PointHistory, PaymentHistory 생성, Point 충전
 		Server->>Database : Point, Payment, PointHistory, PaymentHistory 저장
 	  Server->>Toss Payments API : 결제 승인 요청
+	  alt 승인 완료
     Toss Payments API->>Server : 승인 완료 응답
 		Server->>Client : 200 OK (요청 성공)
+		else 승인 실패
+          Toss Payments API->>Server : 승인 실패 응답
+          Server->>Database : Payment 실패 갱신
+          Server->>Client : Fail (toss payments api status code)
+		end
 	  else 검증 실패
-		Note over Server : Payment Status 변경(CANCEL_PENDING)
-		Server->>Database : Payment 저장
-	  Server->>Event : 결제 검증 실패 이벤트 생성
-	  Server->>Client : 409 Fail (실패)
-	  Event-->>Server: 비동기 이벤트 컨슘
-	  Server->>Database: Payment 조회
-	  Database->>Server: Payment 반환
-		Note over Server : Payment Status 변경(CANCELED), PaymentHistory 생성
-    Server->>Database: Payment, PaymentHistory 저장
-    Server->>Toss Payments API: 결제 취소 요청
-    Toss Payments API->>Server: 취소 성공 응답
+        Server->>Client : 400 BAD_REQUEST (요청 실패)
 		end
 ```
 

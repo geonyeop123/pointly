@@ -30,19 +30,23 @@ classDiagram
         -Long balance
         -LocalDateTime createdAt
         -LocalDateTime modifiedAt
+        +create(userId : Long, balance : Long) : Point
         +charge(amount : Long) : void
     }
     class Payment {
         -Long id
         -Long userId
         -Long amount
+        -String orderId
+        -String paymentToken
         -PGType type
         -PaymentStatus status
         -LocalDateTime createdAt
         -LocalDateTime modifiedAt
         +create(userId : Long, amount : Long, type : PGType) : Payment
         +cancel() : void
-        +complete(amount : Long, type : PGType) : void
+        +complete(amount : Long, type : PGType, orderId : String) : void
+        -validateComplete(paidAmount : Long, type : PGType, orderId : String) : void
         +fail() : void
     }
 
@@ -64,11 +68,8 @@ classDiagram
         -Long paymentId
         -TransactionType type
         -Long amount
-        -String paymentToken
-        -String messageCode
-        -String message
         -LocalDateTime createdAt
-        +paid(payment : Payment, paymentToken : String, createdAt : LocalDateTime) : PaymentHistory
+        +paid(payment : Payment, createdAt : LocalDateTime) : PaymentHistory
     }
 
     class PaymentTransactionType {
@@ -81,6 +82,7 @@ classDiagram
         -TransactionType type
         -Long amount
         -LocalDateTime createdAt
+        +charged(pointId : Long, amount : Long, LocalDateTime createdAt) : PointHistory
     }
     class PointTransactionType {
         <<enumeration>>
